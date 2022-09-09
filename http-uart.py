@@ -16,7 +16,7 @@ while uart.any() > 0:
 
 print(rxData.decode('utf-8'))
 
-ssid = 'ChrisG'
+ssid = '********'
 password = '********'
 
 led = Pin("LED", Pin.OUT, value=0)
@@ -46,6 +46,7 @@ def connect_to_network():
             break
         max_wait -= 1
         print('waiting for connection...')
+        led.toggle()
         time.sleep(1)
 
     if wlan.status() != 3:
@@ -72,7 +73,7 @@ async def serve_client(reader, writer):
     stateis = ""
     if led_on == 6:
         print("led on")
-        led.value(1)
+        #led.value(1)
         stateis = "LED is ON"
         uart.write("on\r")
         time.sleep(0.1)
@@ -80,7 +81,7 @@ async def serve_client(reader, writer):
     
     if led_off == 6:
         print("led off")
-        led.value(0)
+        #led.value(0)
         stateis = "LED is OFF"
         uart.write("off\r")
         time.sleep(0.1)
@@ -101,11 +102,11 @@ async def main():
     print('Setting up webserver...')
     asyncio.create_task(asyncio.start_server(serve_client, "0.0.0.0", 80))
     while True:
-        #led.on()
+        led.on()
         print("heartbeat")
         await asyncio.sleep(0.25)
-        #led.off()
-        await asyncio.sleep(5)
+        led.off()
+        await asyncio.sleep(0.25)
         
 try:
     asyncio.run(main())
